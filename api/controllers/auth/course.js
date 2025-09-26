@@ -12,7 +12,7 @@ export const getCourses = async (req, res) => {
 
 export const createCourse = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.isActive || !req.body.duration || !req.body.discountPrice || !req.body.earlyBirdTitle) {
+        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.duration || !req.body.discountPrice || !req.body.earlyBirdTitle) {
             return res.status(400).json({ success: false, msg: "All fields are required" });
         }
 
