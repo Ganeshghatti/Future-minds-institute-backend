@@ -3,12 +3,12 @@ import User from "../../models/user.js";
 export const UserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
-    const user = await User.findById(userId).select("-password -__v");
+    const user = await User.findById(userId).select("-password -__v").populate("courses.courseId");
 
     if (!user) {
       return res.status(404).json({ success: false, msg: "User not found" });
     }
-
+    // console.log("user: ", user);
     res.status(200).json({ success: true, user });
   } catch (error) {
     console.error("Error fetching user profile:", error);

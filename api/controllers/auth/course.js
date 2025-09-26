@@ -12,11 +12,16 @@ export const getCourses = async (req, res) => {
 
 export const createCourse = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.isActive) {
+        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.isActive || !req.body.duration || !req.body.discountPrice || !req.body.earlyBirdTitle) {
             return res.status(400).json({ success: false, msg: "All fields are required" });
         }
-        const { name, description, features, price, isActive } = req.body;
-        const course = await Course.create({ name, description, features, price, isActive });
+
+        const features = Array.isArray(req.body.features)
+            ? req.body.features
+            : String(req.body.features).split(',').map(feature => feature.trim()).filter(Boolean);
+
+        const { name, description, price, isActive, duration, discountPrice, earlyBirdTitle } = req.body;
+        const course = await Course.create({ name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle });
         res.status(201).json({ success: true, course });
     } catch (error) {
         console.error("Error creating course:", error);
@@ -27,8 +32,8 @@ export const createCourse = async (req, res) => {
 export const updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, features, price, isActive } = req.body;
-        const course = await Course.findByIdAndUpdate(id, { name, description, features, price, isActive }, { new: true });
+        const { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle } = req.body;
+        const course = await Course.findByIdAndUpdate(id, { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle }, { new: true });
         res.status(200).json({ success: true, course });
     } catch (error) {
         console.error("Error updating course:", error);

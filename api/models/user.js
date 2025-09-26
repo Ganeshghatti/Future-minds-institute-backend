@@ -65,7 +65,7 @@ const UserSchema = new mongoose.Schema({
     startDate: {type: Date, required: false},
     endDate: {type: Date, required: false},
     razorpay_order_id: {type: String, required: false},
-    razorpay_payment_id: {type: String, required: false},
+    razorpay_payment_id: {type: String, required: false}
   }],
 
 

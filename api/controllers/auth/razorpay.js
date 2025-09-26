@@ -3,30 +3,46 @@ import Course from "../../models/course.js";
 import razorpayConfig from "../../config/razorpayConfig.js";
 import crypto from "crypto";
 
-export const subscribeUser = async ( req, res) => {
+export const subscribeUser = async (req, res) => {
     try {
-      if (!req.body.data) {
+
+      console.log("Request body: ", req.body);
+      console.log("Request params: ", req.params);
+      console.log("Request user: ", req.user);
+
+      if(!req.body){
         res.status(400).json({
           success: false,
-          message:
-            "Missing required fields: JSON data is required",
+          message: "Missing required fields: JSON data is required",
         });
         return;
       }
+
+      // if (!req.body.data) {
+      //   res.status(400).json({
+      //     success: false,
+      //     message:
+      //       "Missing required fields: JSON data is required",
+      //   });
+      //   return;
+      // }
   
-      let formData;
-      try {
-        formData = JSON.parse(req.body.data);
-      } catch (error) {
-        res.status(400).json({
-          success: false,
-          message: "Invalid JSON data format",
-        });
-        return;
-      }
+      // let formData;
+      // try {
+      //   formData = JSON.parse(req.body.data);
+      // } catch (error) {
+      //   res.status(400).json({
+      //     success: false,
+      //     message: "Invalid JSON data format",
+      //   });
+      //   return;
+      // }
   
-      const { courseId } = formData;
+      const courseId = req.body.courseId;
       const { userId } = req.params;
+
+      // console.log("courseId: ", courseId);
+      // console.log("userId: ", userId);
   
       if (!userId || !courseId) {
         res.status(400).json({
@@ -38,10 +54,7 @@ export const subscribeUser = async ( req, res) => {
       }
   
       // Find user
-      const user = await User.findOne({ userId: userId }).populate({
-        path: "userId",
-        select: "firstName lastName email phone countryCode",
-      });
+      const user = await User.findById(userId);
   
       if (!user) {
         res.status(404).json({
@@ -75,7 +88,7 @@ export const subscribeUser = async ( req, res) => {
   
       // convert to amount to integer
       const options = {
-        amount: Math.round(course.price * 100),
+        amount: Math.round(course.discountPrice * 100),
         currency: "INR",
         receipt: "receipt_" + Math.random().toString(36).substring(7),
       };
@@ -93,7 +106,7 @@ export const subscribeUser = async ( req, res) => {
             name: user.name,
             email: user.email,
             contact: user.phone,
-            countryCode: user.countryCode || "+91",
+            countryCode: "+91",
           },
         },
       });
@@ -116,7 +129,8 @@ export const subscribeUser = async ( req, res) => {
         courseId,
       } = req.body;
   
-      const userId = req.user.id;
+      const userId = req.user._id;
+      console.log("userId: ", userId);
   
       if (
         !razorpay_order_id ||
@@ -139,8 +153,8 @@ export const subscribeUser = async ( req, res) => {
         .digest("hex");
       if (razorpay_signature === expectedSign) {
         // Payment is verified
-        const user = await User.findOne({ userId: userId });
-  
+        const user = await User.findById(userId);
+
         if (!user) {
           res.status(404).json({
             success: false,
@@ -167,62 +181,15 @@ export const subscribeUser = async ( req, res) => {
         }
   
         const startDate = new Date();
-        let endDate = undefined;
-  
-        switch (course.duration) {
-          case "1 month":
-            endDate = new Date(startDate);
-            endDate.setMonth(startDate.getMonth() + 1);
-            break;
-          case "3 months":
-            endDate = new Date(startDate);
-            endDate.setMonth(startDate.getMonth() + 3);
-            break;
-          case "1 year":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 1);
-            break;
-          case "2 years":
-            endDate = new Date(startDate);
-            endDate.setMonth(startDate.getMonth() + 24);
-            break;
-          case "20 years":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 20);
-            break;
-          case "15 years":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 15);
-            break;
-          case "10 years":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 10);
-            break;
-          case "5 years":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 5);
-            break;
-          case "40 years":
-            endDate = new Date(startDate);
-            endDate.setFullYear(startDate.getFullYear() + 40);
-            break;
-          case "lifetime":
-            endDate = undefined; // No end date for lifetime
-            break;
-          default:
-            res.status(400).json({
-              success: false,
-              message: "Invalid subscription duration",
-            });
-            return;
-        }
+        const endDate = new Date(startDate);
+        endDate.setMonth(endDate.getMonth() + parseInt(course.duration));
   
         const newSubscribedCourse = {
           startDate: new Date(),
           endDate,
           razorpay_order_id,
           razorpay_payment_id,
-          CourseId: course._id,
+          courseId: course._id,
           price: course.price,
         };
   

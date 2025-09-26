@@ -3,11 +3,11 @@ const router = express.Router();
 
 import { getCourses, createCourse, updateCourse, deleteCourse } from "../controllers/auth/course.js";
 
-router.route("/courses")
+router.route("/")
     .get(getCourses)
     .post(createCourse);
 
-router.route("/courses/:id")
+router.route("/:id")
     .put(updateCourse)
     .delete(deleteCourse);
 
