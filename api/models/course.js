@@ -8,7 +8,7 @@ const CourseSchema = new mongoose.Schema({
     price: { type: Number, required: true },
     discountPrice: { type: Number, required: true },
     earlyBirdTitle: { type: String, required: true },
-    isActive: { type: Boolean, required: true },
+    isActive: { type: Boolean, required: true, default: false },
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now },
 });
