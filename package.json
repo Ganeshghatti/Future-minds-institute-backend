@@ -1,4 +1,13 @@
 {
+  "name": "future-minds-institute-backend",
+  "version": "1.0.0",
+  "description": "Backend for the Future Minds Institute",
+  "main": "api/server.js",
+  "type": "module",
+  "author": "Future Minds Institute",
+  "license": "ISC",
+  "homepage": "https://futuremindsinstitute.com",
+  
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
