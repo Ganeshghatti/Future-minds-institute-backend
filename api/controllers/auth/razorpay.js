@@ -55,7 +55,6 @@ export const subscribeUser = async (req, res) => {
   
       // Find user
       const user = await User.findById(userId);
-  
       if (!user) {
         res.status(404).json({
           success: false,
@@ -63,9 +62,21 @@ export const subscribeUser = async (req, res) => {
         });
         return;
       }
-  
+
+      // Check if user is already subscribed to the course
+      const alreadySubscribed = user.courses && user.courses.some(
+        (c) => c.courseId && c.courseId.toString() === courseId
+      );
+      if (alreadySubscribed) {
+        res.status(400).json({
+          success: false,
+          message: "User is already subscribed to this course",
+        });
+        return;
+      }
+
       console.log("user on subscribe: ", user);
-  
+
       // Find course
       const course = await Course.findById(courseId);
       if (!course) {
@@ -75,7 +86,7 @@ export const subscribeUser = async (req, res) => {
         });
         return;
       }
-  
+
       if (!course.isActive) {
         res.status(400).json({
           success: false,
@@ -83,20 +94,20 @@ export const subscribeUser = async (req, res) => {
         });
         return;
       }
-  
+
       console.log("course active:", course);
-  
+
       // convert to amount to integer
       const options = {
         amount: Math.round(course.discountPrice * 100),
         currency: "INR",
         receipt: "receipt_" + Math.random().toString(36).substring(7),
       };
-  
+
       const order = await razorpayConfig.orders.create(options);
-  
+
       console.log("order created: ", order);
-  
+
       res.status(200).json({
         success: true,
         message: "Course subscription initiated successfully",
@@ -162,7 +173,7 @@ export const subscribeUser = async (req, res) => {
           });
           return;
         }
-  
+
         const course = await Course.findById(courseId);
         if (!course) {
           res.status(404).json({
@@ -171,7 +182,7 @@ export const subscribeUser = async (req, res) => {
           });
           return;
         }
-  
+
         if (!course.isActive) {
           res.status(400).json({
             success: false,
@@ -179,28 +190,36 @@ export const subscribeUser = async (req, res) => {
           });
           return;
         }
-  
+
         const startDate = new Date();
-        const endDate = new Date(startDate);
-        endDate.setDate(endDate.getDate() + course.courseTotalDuration);
-  
+        let endDate = null;
+        // course.courseTotalDuration should be a number (days). If not, fallback to null.
+        if (
+          typeof course.courseTotalDuration === 'number' &&
+          !isNaN(course.courseTotalDuration) &&
+          course.courseTotalDuration > 0
+        ) {
+          endDate = new Date(startDate);
+          endDate.setDate(endDate.getDate() + course.courseTotalDuration);
+        }
+
         const newSubscribedCourse = {
-          startDate: new Date(),
-          endDate,
+          startDate: startDate,
+          endDate: endDate,
           razorpay_order_id,
           razorpay_payment_id,
           courseId: course._id,
           price: course.price,
         };
-  
+
         user.courses.push(newSubscribedCourse);
-  
+
         await user.save();
-  
+
         res.status(200).json({
           success: true,
           message: "Payment verified successfully",
-          data: doctor,
+          data: user, // changed from doctor to user
         });
       } else {
         res.status(400).json({
