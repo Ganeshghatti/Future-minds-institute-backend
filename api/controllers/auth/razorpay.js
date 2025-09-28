@@ -182,7 +182,7 @@ export const subscribeUser = async (req, res) => {
   
         const startDate = new Date();
         const endDate = new Date(startDate);
-        endDate.setMonth(endDate.getMonth() + parseInt(course.duration));
+        endDate.setDate(endDate.getDate() + course.courseTotalDuration);
   
         const newSubscribedCourse = {
           startDate: new Date(),

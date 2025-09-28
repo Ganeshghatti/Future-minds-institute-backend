@@ -5,7 +5,7 @@ import {
   verifySignupOtp,
 } from "../controllers/auth/signup.js";
 import { Login } from "../controllers/auth/login.js";
-import { UserProfile, updateUserProfile, deleteUserProfile } from "../controllers/auth/user.js";
+import { UserProfile, updateUserProfile, deleteUserProfile, getAllUsers, deleteUserCourse, deleteAllUserCoursesAtOnce } from "../controllers/auth/user.js";
 import rateLimit from "express-rate-limit";
 import { ipKeyGenerator } from "express-rate-limit";
 import userAuth from "../middlewares/user-auth.js";
@@ -33,5 +33,9 @@ router
     .get(userAuth, UserProfile)
     .put(userAuth, updateUserProfile)
     .delete(userAuth, deleteUserProfile);
+
+router.route("/users").get(getAllUsers);
+router.route("/user/course/:id").delete(userAuth, deleteUserCourse);
+router.route("/user/courses").delete(userAuth, deleteAllUserCoursesAtOnce);
 
 export default router;

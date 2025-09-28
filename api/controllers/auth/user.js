@@ -1,5 +1,15 @@
 import User from "../../models/user.js";
 
+export const getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find().select("-password -__v").populate("courses.courseId");
+    res.status(200).json({ success: true, users });
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    res.status(500).json({ success: false, msg: "Internal server error" });
+  }
+};
+
 export const UserProfile = async (req, res) => {
   try {
     const userId = req.user.id;
@@ -65,6 +75,28 @@ export const deleteUserProfile = async (req, res) => {
     res.status(200).json({ success: true, msg: "Profile deleted successfully" });
   } catch (error) {
     console.error("Error deleting user profile:", error);
+    res.status(500).json({ success: false, msg: "Internal server error" });
+  }
+};
+
+export const deleteUserCourse = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.findByIdAndUpdate(userId, { $pull: { courses: { courseId: req.params.id } } });
+    res.status(200).json({ success: true, msg: "Course deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting user course:", error);
+    res.status(500).json({ success: false, msg: "Internal server error" });
+  }
+};
+
+export const deleteAllUserCoursesAtOnce = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await User.findByIdAndUpdate(userId, { $set: { courses: [] } });
+    res.status(200).json({ success: true, msg: "All courses deleted successfully" });
+  } catch (error) {
+    console.error("Error deleting all user courses:", error);
     res.status(500).json({ success: false, msg: "Internal server error" });
   }
 };

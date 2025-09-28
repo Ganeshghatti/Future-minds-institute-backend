@@ -12,7 +12,7 @@ export const getCourses = async (req, res) => {
 
 export const createCourse = async (req, res) => {
     try {
-        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.isActive || !req.body.duration || !req.body.discountPrice || !req.body.earlyBirdTitle) {
+        if (!req.body.name || !req.body.description || !req.body.features || !req.body.price || !req.body.isActive || !req.body.duration || !req.body.discountPrice || !req.body.earlyBirdTitle || !req.body.courseTotalDuration) {
             return res.status(400).json({ success: false, msg: "All fields are required" });
         }
 
@@ -20,8 +20,8 @@ export const createCourse = async (req, res) => {
             ? req.body.features
             : String(req.body.features).split(',').map(feature => feature.trim()).filter(Boolean);
 
-        const { name, description, price, isActive, duration, discountPrice, earlyBirdTitle } = req.body;
-        const course = await Course.create({ name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle });
+        const { name, description, price, isActive, duration, discountPrice, earlyBirdTitle, courseTotalDuration } = req.body;
+        const course = await Course.create({ name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle, courseTotalDuration });
         res.status(201).json({ success: true, course });
     } catch (error) {
         console.error("Error creating course:", error);
@@ -32,8 +32,8 @@ export const createCourse = async (req, res) => {
 export const updateCourse = async (req, res) => {
     try {
         const { id } = req.params;
-        const { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle } = req.body;
-        const course = await Course.findByIdAndUpdate(id, { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle }, { new: true });
+        const { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle, courseTotalDuration } = req.body;
+        const course = await Course.findByIdAndUpdate(id, { name, description, features, price, isActive, duration, discountPrice, earlyBirdTitle, courseTotalDuration }, { new: true });
         res.status(200).json({ success: true, course });
     } catch (error) {
         console.error("Error updating course:", error);
