@@ -34,8 +34,8 @@ router
     .put(userAuth, updateUserProfile)
     .delete(userAuth, deleteUserProfile);
 
-router.route("/users").get(getAllUsers);
-router.route("/user/course/:id").delete(userAuth, deleteUserCourse);
-router.route("/user/courses").delete(userAuth, deleteAllUserCoursesAtOnce);
+// router.route("/users").get(getAllUsers);
+// router.route("/user/course/:id").delete(userAuth, deleteUserCourse);
+// router.route("/user/courses").delete(userAuth, deleteAllUserCoursesAtOnce);
 
 export default router;
