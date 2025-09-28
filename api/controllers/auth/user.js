@@ -82,8 +82,8 @@ export const deleteUserProfile = async (req, res) => {
 export const deleteUserCourse = async (req, res) => {
   try {
     const userId = req.user.id;
-    await User.findByIdAndUpdate(userId, { $pull: { courses: { courseId: req.params.id } } });
-    res.status(200).json({ success: true, msg: "Course deleted successfully" });
+    await User.findByIdAndUpdate(userId, { $pull: { courses: { _id: req.params.id } } });
+    res.status(200).json({ success: true, msg: "Course deleted successfully" }); 
   } catch (error) {
     console.error("Error deleting user course:", error);
     res.status(500).json({ success: false, msg: "Internal server error" });

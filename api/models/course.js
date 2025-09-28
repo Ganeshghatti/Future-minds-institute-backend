@@ -4,7 +4,7 @@ const CourseSchema = new mongoose.Schema({
     name: { type: String, required: true },
     description: { type: String, required: true },
     duration: { type: String, required: true },
-    courseTotalDuration: { type: Number, required: false },
+    courseTotalDuration: { type: Number, required: true },
     features: { type: [String], required: true },
     price: { type: Number, required: true },
     discountPrice: { type: Number, required: true },

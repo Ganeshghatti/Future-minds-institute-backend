@@ -60,12 +60,12 @@ const UserSchema = new mongoose.Schema({
 
  //Order
   courses: [{
-    courseId: {ref: "Course", type: mongoose.Schema.Types.ObjectId, required: false},
-    price: {type: Number, required: false},
-    startDate: {type: Date, required: false},
-    endDate: {type: Date, required: false},
-    razorpay_order_id: {type: String, required: false},
-    razorpay_payment_id: {type: String, required: false}
+    courseId: {ref: "Course", type: mongoose.Schema.Types.ObjectId, required: true},
+    price: {type: Number, required: true},
+    startDate: {type: Date, required: true},
+    endDate: {type: Date, required: true},
+    razorpay_order_id: {type: String, required: true},
+    razorpay_payment_id: {type: String, required: true}
   }],
 
 

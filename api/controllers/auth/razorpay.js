@@ -190,7 +190,7 @@ export const subscribeUser = async (req, res) => {
           razorpay_order_id,
           razorpay_payment_id,
           courseId: course._id,
-          price: course.price,
+          price: course.discountPrice,
         };
   
         user.courses.push(newSubscribedCourse);
