@@ -6,6 +6,7 @@ import connectDB from "./config/db.js";
 import authRoutes from "./routes/auth.js";
 import courseRoutes from "./routes/course.js";
 import paymentRoutes from "./routes/payment.js";
+import adminRoutes from "./routes/admin.js";
 
 dotenv.config();
 
@@ -36,6 +37,7 @@ app.use(globalLimiter);
 app.use("/auth", authRoutes);
 app.use("/course", courseRoutes);
 app.use("/payment", paymentRoutes);
+app.use("/admin", adminRoutes);
 
 connectDB();
 
@@ -55,4 +57,4 @@ app.get("/test", async (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
