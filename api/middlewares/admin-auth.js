@@ -18,7 +18,6 @@ const adminAuth = async (req, res, next) => {
     if (adminId !== "admin") {
       return res.status(401).json({ message: "Unauthorized. Admins only." });
     }
-    req.user = user;
     next();
   } catch (error) {
     res.status(500).json({ message: "Internal server error" });
