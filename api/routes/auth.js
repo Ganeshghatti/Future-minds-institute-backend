@@ -4,7 +4,7 @@ import {
   sendSignupOtp,
   verifySignupOtp,
 } from "../controllers/auth/signup.js";
-import { Login } from "../controllers/auth/login.js";
+import { Login, googleLoginAndSignup } from "../controllers/auth/login.js";
 import { UserProfile, updateUserProfile, deleteUserProfile, getAllUsers, deleteUserCourse, deleteAllUserCoursesAtOnce } from "../controllers/auth/user.js";
 import rateLimit from "express-rate-limit";
 import { ipKeyGenerator } from "express-rate-limit";
@@ -28,6 +28,7 @@ const otpLimiter = rateLimit({
 router.route("/signup/send-otp").post(otpLimiter, sendSignupOtp);
 router.route("/signup/verify-otp").post(verifySignupOtp);
 router.route("/login").post(Login);
+router.route("/google/login").get(googleLoginAndSignup);
 router
   .route("/user/profile")
     .get(userAuth, UserProfile)
