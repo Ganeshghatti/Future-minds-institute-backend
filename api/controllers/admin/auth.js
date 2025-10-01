@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 export const adminLogin = (req, res, next) => {
   try {
     const { email, password } = req.body;
-    if (email === "admin@womeninproductindia.com" && password === "admin") {
+    if (email === "admin@womeninproductindia.com" && password === "admin@123") {
       const token = jwt.sign({ id: "admin" }, process.env.JWT_SECRET, {
         expiresIn: "24h",
       });

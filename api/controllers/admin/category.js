@@ -2,7 +2,9 @@ import category from "../../models/category.js";
 
 export const getCategories = async (req, res) => {
   try {
+    console.log("Fetching all categories...");
     const categories = await category.find();
+    console.log(`Found ${categories.length} categories:`, categories);
     res.status(200).json({ success: true, categories });
   } catch (error) {
     console.error("Error fetching categories:", error);
@@ -13,8 +15,18 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
+    // Check existing categories before creating
+    const existingCategories = await category.find();
+    console.log(`Existing categories before creation: ${existingCategories.length}`);
+    
     const newCategory = new category({ name, description });
     await newCategory.save();
+    
+    // Check categories after creation
+    const allCategories = await category.find();
+    console.log(`Total categories after creation: ${allCategories.length}`);
+    console.log("All categories:", allCategories);
+    
     res.status(201).json({ success: true, category: newCategory });
   } catch (error) {
     console.error("Error creating category:", error);
