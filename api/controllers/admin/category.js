@@ -15,17 +15,9 @@ export const getCategories = async (req, res) => {
 export const createCategory = async (req, res) => {
   try {
     const { name, description } = req.body;
-    // Check existing categories before creating
-    const existingCategories = await category.find();
-    console.log(`Existing categories before creation: ${existingCategories.length}`);
-    
+
     const newCategory = new category({ name, description });
     await newCategory.save();
-    
-    // Check categories after creation
-    const allCategories = await category.find();
-    console.log(`Total categories after creation: ${allCategories.length}`);
-    console.log("All categories:", allCategories);
     
     res.status(201).json({ success: true, category: newCategory });
   } catch (error) {
