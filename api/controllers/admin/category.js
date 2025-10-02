@@ -1,4 +1,5 @@
 import category from "../../models/category.js";
+import Course from "../../models/course.js";
 
 export const getCategories = async (req, res) => {
   try {
@@ -56,6 +57,13 @@ export const deleteCategory = async (req, res) => {
         .status(404)
         .json({ success: false, msg: "Category not found" });
     }
+
+    // Remove the category reference from all courses
+    await Course.updateMany(
+      { categories: id },
+      { $pull: { categories: id } }
+    );
+
     res
       .status(200)
       .json({ success: true, msg: "Category deleted successfully" });
