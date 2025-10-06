@@ -7,6 +7,7 @@ import authRoutes from "./routes/auth.js";
 import courseRoutes from "./routes/course.js";
 import paymentRoutes from "./routes/payment.js";
 import adminRoutes from "./routes/admin.js";
+import categoryRoutes from "./routes/category.js";
 
 dotenv.config();
 
@@ -38,6 +39,7 @@ app.use("/auth", authRoutes);
 app.use("/course", courseRoutes);
 app.use("/payment", paymentRoutes);
 app.use("/admin", adminRoutes);
+app.use("/category", categoryRoutes);
 
 connectDB();
 

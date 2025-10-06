@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 const UserSchema = new mongoose.Schema({ 
   email: { type: String, required: true, unique: true },
   password: { type: String, required: false},
-
+  resetToken: { type: String, required: false},
+  resetTokenExpire: { type: Date, required: false},
+  lastResetPasswordAt: { type: Date, required: false},
   //Personal Information
   name: { type: String, required: true },
   dateOfBirth: {type: Date, required: false},
