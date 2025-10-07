@@ -82,7 +82,7 @@ const sendResetPasswordLink = async (email, resetUrl) => {
   }
   catch(error){
     console.error("Error in sendResetPasswordLink:", error);
-    return { error: error.message };
+    throw error;
   }
 }
 

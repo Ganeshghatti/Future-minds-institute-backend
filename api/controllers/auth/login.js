@@ -4,6 +4,7 @@ import User from "../../models/user.js";
 import { oauth2client } from "../../config/googleConfig.js";
 import axios from "axios";
 import sendResetPasswordLink from "../../utils/email.js";
+import validator from "validator";
 
 export const Login = async (req, res) => {
   try {
@@ -61,12 +62,13 @@ export const googleLoginAndSignup = async(req,res) => {
 
 export const SendResetPasswordLink = async(req,res) => {
   try{
-    const { email } = req.body;
+    let { email } = req.body;
+    email = (email).toLowerCase();
 
-    if (!email) {
+    if (!email || !validator.isEmail(email)) {
       return res.status(400).json({
         success: false,
-        message: "Provide credentials first.",
+        message: "Provide a valid email.",
       });
     }
 
@@ -77,7 +79,14 @@ export const SendResetPasswordLink = async(req,res) => {
         message: "Email doesn't exist, please register first.",
       });
     }
-    
+
+    if(user.resetTokenExpire!=null && (Date.now() - user.resetTokenExpire) < 2 * 60 * 1000) {
+      return res.status(400).json({
+        success: false,
+        message: "Reset password link already sent. Please wait for 2 minute before requesting another.",
+      });
+    }
+
     const resetToken = jwt.sign(
       {id: user._id, email: user.email},
       process.env.JWT_SECRET,

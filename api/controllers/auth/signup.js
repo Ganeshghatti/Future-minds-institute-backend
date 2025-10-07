@@ -7,7 +7,8 @@ import { sendSMS } from "../../utils/sms.js";
 
 export const sendSignupOtp = async (req, res) => {
   try {
-    const { phone, email, name, password } = req.body;
+    const { phone, name, password } = req.body;
+    let { email } = req.body;
 
     if (!phone || !email || !name || !password) {
       return res
@@ -26,6 +27,8 @@ export const sendSignupOtp = async (req, res) => {
         .status(400)
         .json({ success: false, msg: "Valid email is required" });
     }
+
+    email = (email).toLowerCase();
 
     const existingUserByPhone = await User.findOne({ phone });
     const existingUserByEmail = await User.findOne({ email });
@@ -68,13 +71,15 @@ export const sendSignupOtp = async (req, res) => {
 
 export const verifySignupOtp = async (req, res) => {
   try {
-    const { phone, otp, password, name, email } = req.body;
+    const { phone, otp, password, name } = req.body;
+    let { email } = req.body;
 
     if (!phone || !otp || !password || !name || !email) {
       return res
         .status(400)
         .json({ success: false, msg: "Phone, OTP, and password are required" });
     }
+    email = (email).toLowerCase();
 
     const record = await OTP.findOne({ phone });
     if (!record) {
