@@ -28,18 +28,18 @@ export const sendSignupOtp = async (req, res) => {
         .json({ success: false, msg: "Valid email is required" });
     }
 
-    email = (email).toLowerCase();
+    email = email.toLowerCase();
 
     const existingUserByPhone = await User.findOne({ phone });
     const existingUserByEmail = await User.findOne({ email });
-    
+
     if (existingUserByPhone) {
       return res.status(400).json({
         success: false,
         msg: "User already exists with this phone number",
       });
     }
-    
+
     if (existingUserByEmail) {
       return res.status(400).json({
         success: false,
@@ -79,7 +79,7 @@ export const verifySignupOtp = async (req, res) => {
         .status(400)
         .json({ success: false, msg: "Phone, OTP, and password are required" });
     }
-    email = (email).toLowerCase();
+    email = email.toLowerCase();
 
     const record = await OTP.findOne({ phone });
     if (!record) {
@@ -112,6 +112,8 @@ export const verifySignupOtp = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "24h",
     });
+    await SendWelcomeEmail(user.name, user.email);
+
     await OTP.deleteOne({ phone });
     return res.json({ success: true, token });
   } catch (err) {
